@@ -44,9 +44,9 @@ final class HttpRequest implements Runnable {
         String fileName = tokens.nextToken();
         // Acrescente um “.” de modo que a requisição do arquivo esteja dentro do diretório atual.
         fileName = "." + fileName;
-
         System.out.println("Filename to Get: " + fileName);
-
+   
+        
         // Abrir o arquivo requisitado.
         FileInputStream fis = null;
         Boolean fileExists = true;
@@ -72,14 +72,14 @@ final class HttpRequest implements Runnable {
         String contentTypeLine = null;
         String entityBody = null;
         if (fileExists) {
-            statusLine = "200 OK:";//Arumar
-            contentTypeLine = "Content - type: " + contentType(fileName) + CRLF;
+            statusLine = "HTTP/1.1 200 OK: ";
+            contentTypeLine = "Content-Type: " + contentType(fileName) + CRLF;
         } else {
-            statusLine = "HTTP/1.1 404 Not Found";//Arrumar
-            contentTypeLine = "Content-Type: text/html" + CRLF;//Arrumar
-            entityBody = "<HTML>" + "<HEAD><TITLE>Not Found</TITLE></HEAD>" + "<BODY>Not Found</BODY></HTML>";
+            statusLine = "HTTP/1.1 404 Not Found: ";
+            contentTypeLine = "Content-Type: text/html" + CRLF;
+            entityBody = "<HTML>" + "<HEAD><TITLE>Nao encontrado</TITLE></HEAD>" + "<BODY>O arquivo requisitado nao foi encontrado.</BODY></HTML>";
         }
-
+        
         // Enviar a linha de status.
         os.writeBytes(statusLine);
 
@@ -96,13 +96,13 @@ final class HttpRequest implements Runnable {
         } else {
             os.writeBytes(entityBody);
         }
-        os.writeBytes(entityBody);
 
-        // Obter e exibir as linhas de cabeçalho.
-        //String headerLine = null;
-        //while ((headerLine = br.readLine()).length() != 0) {
-        //    System.out.println(headerLine);
-        //}
+        // Obter e exibir as linhas de cabeçalho.     
+   String headerLine = null;
+   while ((headerLine = br.readLine()).length() != 0) { 
+    System.out.println(headerLine);
+   }
+        
         // Feche as cadeias e socket.
         os.close();
         br.close();
