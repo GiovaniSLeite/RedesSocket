@@ -6,18 +6,22 @@ public final class WebServer {
     
    public static void main(String argv[]) throws Exception
  {
+     // Ajustar o número da porta.
      int port =6789;
-     ServerSocket server = new ServerSocket(port);
      
+     // Estabelecer o socket de escuta.
+     ServerSocket server = new ServerSocket(port);
+     System.out.println("Porta " + port + " aberta!");
+     // Processar a requisição de serviço HTTP em um laço infinito.
      while (true) {
-      // Listen for a TCP connection request.
+      // Escutar requisição de conexão TCP.
       Socket conexao = server.accept();
-      //Construct object to process HTTP request message
+      //Construir um objeto para processar a mensagem de requisição HTTP.
       HttpRequest request = new HttpRequest(conexao);
       
       
-      Thread thread = new Thread(request);
-      thread.start(); //start thread
+      Thread thread = new Thread(request); // Criar um novo thread para processar a requisição.
+      thread.start(); //Iniciar o thread.
      }
  }
 }
