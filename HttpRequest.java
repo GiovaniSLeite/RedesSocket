@@ -81,6 +81,12 @@ final class HttpRequest implements Runnable {
             entityBody = "<HTML>" + "<HEAD><TITLE>Not Found</TITLE></HEAD>" + "<BODY>Not Found</BODY></HTML>";
         
         }
+        
+        // Obter e exibir as linhas de cabeçalho.
+        String headerLine = null;
+        while ((headerLine = br.readLine()).length() != 0) {
+        System.out.println(headerLine);
+}
 
         // Enviar a linha de status.
         os.writeBytes(statusLine);
