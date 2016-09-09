@@ -1,10 +1,10 @@
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
 final class HttpRequest implements Runnable {
 
+    
     final static String CRLF = "\r\n";
     Socket socket;
 
@@ -23,28 +23,29 @@ final class HttpRequest implements Runnable {
 
     private void processRequest() throws Exception {
 
-        // Obter uma referencia para os trechos de entrada e saida do socket.
+        // Obter uma referência para os trechos de entrada e saída do socket.
         InputStream is = socket.getInputStream();
         DataOutputStream os = new DataOutputStream(socket.getOutputStream());
 
         // Ajustar os filtros do trecho de entrada.
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-        // Obter a linha de requisicao da mensagem de requisição HTTP.
+        // Obter a linha de requisição da mensagem de requisição HTTP.
         String requestLine = br.readLine();
 
-        //  Exibir a linha de requisicao.
+        //  Exibir a linha de requisição.
         System.out.println();
         System.out.println(requestLine);
 
-        // Extrair o nome do arquivo a linha de requisicao.
+        // Extrair o nome do arquivo a linha de requisição.
         StringTokenizer tokens = new StringTokenizer(requestLine);
-
-        tokens.nextToken(); // pular o método, que deve ser “GET”
+        tokens.nextToken(); // pular o primeiro método, que deve ser “GET”
         String fileName = tokens.nextToken();
-        // Acrescente um “.” de modo que a requisicao do arquivo esteja dentro do diretorio atual.
+        
+        // Acrescente um “.” de modo que a requisição do arquivo esteja dentro do diretório atual.
         fileName = "." + fileName;
-        System.out.println("Filename to Get: " + fileName);
+
+        System.out.println("Nome do Arquivo buscado: " + fileName);
 
         // Abrir o arquivo requisitado.
         FileInputStream fis = null;
@@ -54,79 +55,81 @@ final class HttpRequest implements Runnable {
         } catch (FileNotFoundException e) {
             fileExists = false;
         }
-
-        /*
-        Existem tres partes para a mensagem de resposta: a linha de status, 
-        os cabecalhos da resposta e o corpo da entidade. A linha de status e 
-        os cabecalhos da resposta são terminados pela de sequencia de caracteres 
-        CRLF. Iremos responder com uma linha de status, que armazenamos na 
-        variavel statusLine, e um unico cabeçalho de resposta, que armazenamos 
-        na variavel contentTypeLine. No caso de uma requisicao de um arquivo 
-        nao existente, retornamos 404 Not Found na linha de status da mensagem 
-        de resposta e incluimos uma mensagem de erro no formato de um documento
-        HTML no corpo da entidade.
-         */
-        // Construir a mensagem de resposta.
+        
+        // Define as strings das mensagens de resposta.
         String statusLine = null;
         String contentTypeLine = null;
         String entityBody = null;
+        
+        //Se o arquivo requisitado existir
         if (fileExists) {
-            statusLine = "HTTP/1.1 200 OK: ";
-            contentTypeLine = "Content-Type: " + contentType(fileName) + CRLF;
+            
+            //Escreve que o Status está OK
+            statusLine = "HTTP/1.1 OK"; 
+            
+            //Recupera o tipo do arquivo atraves do metodo contentType
+            contentTypeLine = "Content - type: " + contentType(fileName) + CRLF; 
+            
+          //Se o arquivo nao existir  
         } else {
-            statusLine = "HTTP/1.1 404 Not Found: ";
-            contentTypeLine = "Content-Type: text/html" + CRLF;
-            entityBody = "<HTML>" + "<HEAD><TITLE>Nao encontrado</TITLE></HEAD>" + "<BODY>O arquivo requisitado nao foi encontrado.</BODY></HTML>";
+            
+            //Escreve que o Status eh "Nao encontrado"
+            statusLine = "HTTP/1.1 404 Not Found";
+            
+            //Define a mensagem padrao de "Not found"
+            contentTypeLine = "Content-Type: text/html" + CRLF;//Arrumar
+            entityBody = "<HTML>" + "<HEAD><TITLE>Not Found</TITLE></HEAD>" + "<BODY>Not Found</BODY></HTML>";
+        
         }
 
         // Enviar a linha de status.
         os.writeBytes(statusLine);
 
-        // Enviar a linha de tipo de conteudo.
+        // Enviar a linha de tipo de conteúdo.
         os.writeBytes(contentTypeLine);
 
-        // Enviar uma linha em branco para indicar o fim das linhas de cabecalho.
+        // Enviar uma linha em branco para indicar o fim das linhas de cabeçalho.
         os.writeBytes(CRLF);
 
-        // Enviar o corpo da entidade.
+        // Enviar o corpo da entidade, para ambos os casos (arquivo existir ou nao)
         if (fileExists) {
             sendBytes(fis, os);
-            fis.close();
+            fis.close(); //Fecha o FileInputStream
         } else {
             os.writeBytes(entityBody);
         }
-
-        // Obter e exibir as linhas de cabecalho.     
-        String headerLine = null;
-        while ((headerLine = br.readLine()).length() != 0) {
-            System.out.println(headerLine);
-        }
-
-        // Feche as cadeias e socket.
+        
+        //Fecha todas as conexoes restantes
         os.close();
         br.close();
         socket.close();
     }
 
+    //Recupera o tipo do conteudo do arquivo requisitado
     private String contentType(String fileName) {
         if (fileName.endsWith(".htm") || fileName.endsWith(".html")) {
-            return "text/html";
-        }
-        //Implementar para outros tipos
+                return "text/html";
+	}
         if (fileName.endsWith(".gif")) {
-            return "image/gif";
+                return "image/gif"; 
         }
         if (fileName.endsWith(".jpeg") || fileName.endsWith(".jpg")) {
-            return "image/jpeg";
+                return "image/jpeg"; 
         }
+        
+        //Este metodo pode ser incrementado para o reconhecimento de outros tipos de arquivos
+        
         return "application/octet-stream";
     }
 
+    //Metodo de envio de Bytes
     private void sendBytes(FileInputStream fis, DataOutputStream os) throws Exception {
+        
         // Construir um buffer de 1K para comportar os bytes no caminho para o socket.
         byte[] buffer = new byte[1024];
         int bytes = 0;
-        // Copiar o arquivo requisitado dentro da cadeia de saida do socket.
+        
+        // Copiar o arquivo requisitado dentro da cadeia de saída do socket.
         while ((bytes = fis.read(buffer)) != -1) {
             os.write(buffer, 0, bytes);
         }
