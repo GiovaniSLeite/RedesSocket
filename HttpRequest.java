@@ -93,10 +93,10 @@ final class HttpRequest implements Runnable {
 					//System.out.println("In Work:" + f.getAbsolutePath());
 					if (i % 2 == 0) sb.append("\n\t<tr class='alt'>");
 					else sb.append("\n\t<tr>");
-					if (files[i].isDirectory()) sb.append("\n\t\t<td><a href='" + targetFile.getPath() + files[i].getName() + "/'>" + files[i].getName() + "</a></td>" +
+					if (files[i].isDirectory()) sb.append("\n\t\t<td><a href='" + files[i].getName() + "/'>" + files[i].getName() + "</a></td>" +
 						"<td>Y</td>" + "<td>" + files[i].length() +
 						"</td>" + "<td>" + (new Date(files[i].lastModified())) + "</td>\n\t</tr>");
-					else sb.append("\n\t\t<td><a href='" + targetFile.getPath() + files[i].getName() + "'>" + files[i].getName() + "</a></td>" +
+					else sb.append("\n\t\t<td><a href='" + targetFile.getParent()+"/" + files[i].getName() + "'>" + files[i].getName() + "</a></td>" +
 						"<td>N</td>" + "<td>" + files[i].length() +
 						"</td>" + "<td>" + (new Date(files[i].lastModified())) + "</td>\n\t</tr>");
 				}
@@ -149,8 +149,8 @@ final class HttpRequest implements Runnable {
         // Enviar a linha de tipo de conteúdo.
         os.writeBytes(contentTypeLine);
 
-        
-        os.writeBytes(sb.toString());
+        if(targetFile.isDirectory())
+            os.writeBytes(sb.toString());
         // Enviar uma linha em branco para indicar o fim das linhas de cabeçalho.
         os.writeBytes(CRLF);
 
