@@ -1,10 +1,10 @@
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
 final class HttpRequest implements Runnable {
 
-    
     final static String CRLF = "\r\n";
     Socket socket;
 
@@ -39,54 +39,109 @@ final class HttpRequest implements Runnable {
 
         // Extrair o nome do arquivo a linha de requisição.
         StringTokenizer tokens = new StringTokenizer(requestLine);
-        tokens.nextToken(); // pular o primeiro método, que deve ser “GET”
+        //tokens.nextToken();
+        tokens.nextToken(); // pular o método, que deve ser “GET”
         String fileName = tokens.nextToken();
-        
         // Acrescente um “.” de modo que a requisição do arquivo esteja dentro do diretório atual.
         fileName = "." + fileName;
+        System.out.println("Filename to Get: " + fileName);
 
-        System.out.println("Nome do Arquivo buscado: " + fileName);
-
+        //Atividade 4 - cria um file        
+        File targetFile = new File(new File("."), fileName);
+        
         // Abrir o arquivo requisitado.
-        FileInputStream fis = null;
         Boolean fileExists = true;
-        try {
-            fis = new FileInputStream(fileName);
-        } catch (FileNotFoundException e) {
+        FileInputStream fis = null;
+        StringBuffer sb = new StringBuffer();
+        if(targetFile.exists()){
+            if(targetFile.isFile())
+                fis = new FileInputStream(targetFile);
+            else if(targetFile.isDirectory()){
+                File files[] = targetFile.listFiles();
+				
+				sb.append("\n<html>");
+				sb.append("\n<head>");
+				sb.append("\n<style>");
+				sb.append("\n</style>");
+				sb.append("\n<title>List of files/dirs under /scratch/mseelam/view_storage/mseelam_otd1/otd_test/./work</title>");
+				sb.append("\n</head>");
+				sb.append("\n<body>");
+				sb.append("\n<div class=\"datagrid\">");
+				sb.append("\n<table>");
+				sb.append("\n<caption>Directory Listing</caption>");
+				sb.append("\n<thead>");
+				sb.append("\n	<tr>");
+				sb.append("\n		<th>File</th>");
+				sb.append("\n		<th>Dir ?</th>");
+				sb.append("\n		<th>Size</th>");
+				sb.append("\n		<th>Date</th>");
+				sb.append("\n	</tr>");
+				sb.append("\n</thead>");
+				sb.append("\n<tfoot>");
+				sb.append("\n	<tr>");
+				sb.append("\n		<th>File</th>");
+				sb.append("\n		<th>Dir ?</th>");
+				sb.append("\n		<th>Size</th>");
+				sb.append("\n		<th>Date</th>");
+				sb.append("\n	</tr>");
+				sb.append("\n</tfoot>");
+				sb.append("\n<tbody>");
+
+				int numberOfFiles = files.length;
+
+				for (int i = 0; i < numberOfFiles; i++) {
+					//System.out.println("In Work:" + f.getAbsolutePath());
+					if (i % 2 == 0) sb.append("\n\t<tr class='alt'>");
+					else sb.append("\n\t<tr>");
+					if (files[i].isDirectory()) sb.append("\n\t\t<td><a href='" + targetFile.getPath() + files[i].getName() + "/'>" + files[i].getName() + "</a></td>" +
+						"<td>Y</td>" + "<td>" + files[i].length() +
+						"</td>" + "<td>" + (new Date(files[i].lastModified())) + "</td>\n\t</tr>");
+					else sb.append("\n\t\t<td><a href='" + targetFile.getPath() + files[i].getName() + "'>" + files[i].getName() + "</a></td>" +
+						"<td>N</td>" + "<td>" + files[i].length() +
+						"</td>" + "<td>" + (new Date(files[i].lastModified())) + "</td>\n\t</tr>");
+				}
+				sb.append("\n</tbody>");
+				sb.append("\n</table>");
+				sb.append("\n</div>");
+				sb.append("\n</body>");
+				sb.append("\n</html>");
+
+			
+            }
+                
+                
+        }else
+        {
             fileExists = false;
         }
         
-        // Define as strings das mensagens de resposta.
+        
+        
+        
+
+        /*
+        Existem três partes para a mensagem de resposta: a linha de status, 
+        os cabeçalhos da resposta e o corpo da entidade. A linha de status e 
+        os cabeçalhos da resposta são terminados pela de seqüência de caracteres 
+        CRLF. Iremos responder com uma linha de status, que armazenamos na 
+        variável statusLine, e um único cabeçalho de resposta, que armazenamos 
+        na variável contentTypeLine. No caso de uma requisição de um arquivo 
+        não existente, retornamos 404 Not Found na linha de status da mensagem 
+        de resposta e incluímos uma mensagem de erro no formato de um documento
+        HTML no corpo da entidade.
+         */
+        // Construir a mensagem de resposta.
         String statusLine = null;
         String contentTypeLine = null;
         String entityBody = null;
-        
-        //Se o arquivo requisitado existir
         if (fileExists) {
-            
-            //Escreve que o Status está OK
-            statusLine = "HTTP/1.1 OK"; 
-            
-            //Recupera o tipo do arquivo atraves do metodo contentType
-            contentTypeLine = "Content - type: " + contentType(fileName) + CRLF; 
-            
-          //Se o arquivo nao existir  
+            statusLine = "HTTP/1.1 200 OK: ";
+            contentTypeLine = "Content-Type: " + contentType(fileName) + CRLF;
         } else {
-            
-            //Escreve que o Status eh "Nao encontrado"
-            statusLine = "HTTP/1.1 404 Not Found";
-            
-            //Define a mensagem padrao de "Not found"
-            contentTypeLine = "Content-Type: text/html" + CRLF;//Arrumar
-            entityBody = "<HTML>" + "<HEAD><TITLE>Not Found</TITLE></HEAD>" + "<BODY>Not Found</BODY></HTML>";
-        
+            statusLine = "HTTP/1.1 404 Not Found: ";
+            contentTypeLine = "Content-Type: text/html" + CRLF;
+            entityBody = "<HTML>" + "<HEAD><TITLE>Nao encontrado</TITLE></HEAD>" + "<BODY>O arquivo requisitado nao foi encontrado.</BODY></HTML>";
         }
-        
-        // Obter e exibir as linhas de cabeçalho.
-        String headerLine = null;
-        while ((headerLine = br.readLine()).length() != 0) {
-        System.out.println(headerLine);
-}
 
         // Enviar a linha de status.
         os.writeBytes(statusLine);
@@ -94,47 +149,49 @@ final class HttpRequest implements Runnable {
         // Enviar a linha de tipo de conteúdo.
         os.writeBytes(contentTypeLine);
 
+        
+        os.writeBytes(sb.toString());
         // Enviar uma linha em branco para indicar o fim das linhas de cabeçalho.
         os.writeBytes(CRLF);
 
-        // Enviar o corpo da entidade, para ambos os casos (arquivo existir ou nao)
+        // Enviar o corpo da entidade.
         if (fileExists) {
             sendBytes(fis, os);
-            fis.close(); //Fecha o FileInputStream
+            fis.close();
         } else {
             os.writeBytes(entityBody);
         }
-        
-        //Fecha todas as conexoes restantes
+
+        // Obter e exibir as linhas de cabeçalho.     
+        String headerLine = null;
+        while ((headerLine = br.readLine()).length() != 0) {
+            System.out.println(headerLine);
+        }
+
+        // Feche as cadeias e socket.
         os.close();
         br.close();
         socket.close();
     }
 
-    //Recupera o tipo do conteudo do arquivo requisitado
     private String contentType(String fileName) {
-        if (fileName.endsWith(".htm") || fileName.endsWith(".html")) {
-                return "text/html";
-	}
+        if (fileName.endsWith(".htm") || fileName.endsWith(".html") ||  fileName.endsWith("//")){
+            return "text/html";
+        }
+        //Implementar para outros tipos
         if (fileName.endsWith(".gif")) {
-                return "image/gif"; 
+            return "image/gif";
         }
         if (fileName.endsWith(".jpeg") || fileName.endsWith(".jpg")) {
-                return "image/jpeg"; 
+            return "image/jpeg";
         }
-        
-        //Este metodo pode ser incrementado para o reconhecimento de outros tipos de arquivos
-        
         return "application/octet-stream";
     }
 
-    //Metodo de envio de Bytes
     private void sendBytes(FileInputStream fis, DataOutputStream os) throws Exception {
-        
         // Construir um buffer de 1K para comportar os bytes no caminho para o socket.
         byte[] buffer = new byte[1024];
         int bytes = 0;
-        
         // Copiar o arquivo requisitado dentro da cadeia de saída do socket.
         while ((bytes = fis.read(buffer)) != -1) {
             os.write(buffer, 0, bytes);
