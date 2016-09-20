@@ -1,0 +1,15 @@
+String headerLine = null;
+        String correta = "a";
+        while ((headerLine = br.readLine()).length() != 0) {
+            if(headerLine.contains("Authorization:")){
+                String[] a = headerLine.split(" ");
+                String senha = a[a.length-1];
+                if(senha.equals(correta)){
+                    os.writeBytes("HTTP/1.1 200 OK: ");
+                }else{
+                    os.writeBytes("HTTP/1.1 401 Caio: ");
+                    os.writeBytes("WWW-Authenticate: Basic realm=\"Gigico\"");
+                }
+            }
+            System.out.println(headerLine);
+        }
