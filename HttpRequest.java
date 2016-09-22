@@ -1,6 +1,7 @@
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 final class HttpRequest implements Runnable {
@@ -17,7 +18,7 @@ final class HttpRequest implements Runnable {
         try {
             processRequest();
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -33,9 +34,10 @@ final class HttpRequest implements Runnable {
         // Obter a linha de requisição da mensagem de requisição HTTP.
         String requestLine = br.readLine();
 
-        //  Exibir a linha de requisição.
+        //  Exibir a linha de requisição e grava no log
         System.out.println();
         System.out.println(requestLine);
+        Log.geraLog(requestLine);
 
         // Extrair o nome do arquivo a linha de requisição.
         StringTokenizer tokens = new StringTokenizer(requestLine);
@@ -45,20 +47,44 @@ final class HttpRequest implements Runnable {
         // Acrescente um “.” de modo que a requisição do arquivo esteja dentro do diretório atual.
         fileName = "." + fileName;
         System.out.println("Filename to Get: " + fileName);
+        boolean autorizado = false;
+        // Obter e exibir as linhas de cabeçalho.     
+        String headerLine = null;
+        while ((headerLine = br.readLine()).length() != 0) {
+            System.out.println(headerLine);
+            if(headerLine.contains("Host:")){
+                Log.geraLog("Endereco + Porta: "+headerLine.substring(5));
+            }
+            if(headerLine.contains("Authorization"))
+            {
+                String userSenha = headerLine.split(" ")[2];
+                byte[] decodedBytes = Base64.getDecoder().decode(userSenha.getBytes());
+                System.out.println("ACHOU " + new String(decodedBytes,  Charset.forName(("UTF-8"))));
+                autorizado = true;
+            }
+        }
 
         //Atividade 4 - cria um file        
         File targetFile = new File(new File("."), fileName);
         
+        String statusLine = null;
+        String contentTypeLine = null;
+        String entityBody = null;
         // Abrir o arquivo requisitado.
         Boolean fileExists = true;
         FileInputStream fis = null;
         StringBuffer sb = new StringBuffer();
+        
         if(targetFile.exists()){
             if(targetFile.isFile())
                 fis = new FileInputStream(targetFile);
             else if(targetFile.isDirectory()){
+                if(!autorizado){
+                    statusLine = "HTTP/1.1 401 ANAUTHORIZED" + CRLF;
+                    contentTypeLine = "WWW-Authenticate: Basic realm=\\\"Gigico\\\"";
+                }
+                
                 File files[] = targetFile.listFiles();
-				
 				sb.append("\n<html>");
 				sb.append("\n<head>");
 				sb.append("\n<style>");
@@ -131,14 +157,15 @@ final class HttpRequest implements Runnable {
         HTML no corpo da entidade.
          */
         // Construir a mensagem de resposta.
-        String statusLine = null;
-        String contentTypeLine = null;
-        String entityBody = null;
-        if (fileExists) {
-            statusLine = "HTTP/1.1 200 OK: ";
-            contentTypeLine = "Content-Type: " + contentType(fileName) + CRLF;
-        } else {
-            statusLine = "HTTP/1.1 404 Not Found: ";
+        
+        if (fileExists && autorizado) {
+            statusLine = "HTTP/1.1 200 OK" + CRLF;
+            if(!targetFile.isDirectory())
+                contentTypeLine = "Content-Type: " + contentType(fileName) + CRLF;
+            else
+                contentTypeLine = "Content-Type: text/html" + CRLF;
+        } else if(autorizado) {
+            statusLine = "HTTP/1.1 404 Not Found"+ CRLF;
             contentTypeLine = "Content-Type: text/html" + CRLF;
             entityBody = "<HTML>" + "<HEAD><TITLE>Nao encontrado</TITLE></HEAD>" + "<BODY>O arquivo requisitado nao foi encontrado.</BODY></HTML>";
         }
@@ -148,24 +175,18 @@ final class HttpRequest implements Runnable {
 
         // Enviar a linha de tipo de conteúdo.
         os.writeBytes(contentTypeLine);
-
-        if(targetFile.isDirectory())
-            os.writeBytes(sb.toString());
         // Enviar uma linha em branco para indicar o fim das linhas de cabeçalho.
         os.writeBytes(CRLF);
-
+        if(targetFile.isDirectory())
+            os.writeBytes(sb.toString());
         // Enviar o corpo da entidade.
         if (fileExists) {
-            sendBytes(fis, os);
-            fis.close();
+            if(fis != null){
+                sendBytes(fis, os);
+                fis.close();
+            }
         } else {
             os.writeBytes(entityBody);
-        }
-
-        // Obter e exibir as linhas de cabeçalho.     
-        String headerLine = null;
-        while ((headerLine = br.readLine()).length() != 0) {
-            System.out.println(headerLine);
         }
 
         // Feche as cadeias e socket.
@@ -194,8 +215,11 @@ final class HttpRequest implements Runnable {
         int bytes = 0;
         // Copiar o arquivo requisitado dentro da cadeia de saída do socket.
         while ((bytes = fis.read(buffer)) != -1) {
+            Log.geraLog("Bytes: "+Integer.toString(bytes));
             os.write(buffer, 0, bytes);
         }
     }
+    
+    
 
 }
