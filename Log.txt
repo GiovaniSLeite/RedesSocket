@@ -1,0 +1,245 @@
+
+Hora: Sat Sep 24 17:06:23 BRT 2016
+Alo alo 6789
+
+Hora: Sat Sep 24 17:06:23 BRT 2016
+Alo alo 6789
+
+Hora: Sat Sep 24 17:06:23 BRT 2016
+Alo alo 6789
+Operacao requisitada: GET / HTTP/1.1
+Operacao requisitada: GET / HTTP/1.1
+Operacao requisitada: GET / HTTP/1.1
+
+Hora: Sat Sep 24 17:06:23 BRT 2016
+Alo alo 6789
+Operacao requisitada: GET / HTTP/1.1
+
+Hora: Sat Sep 24 17:06:23 BRT 2016
+Alo alo 6789
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+
+Hora: Sat Sep 24 17:06:23 BRT 2016
+Alo alo 6789
+Operacao requisitada: GET /src/ HTTP/1.1
+
+Hora: Sat Sep 24 17:06:23 BRT 2016
+Alo alo 6789
+
+Hora: Sat Sep 24 17:08:17 BRT 2016
+Alo alo 2 55125
+Operacao requisitada: GET / HTTP/1.1
+
+Hora: Sat Sep 24 17:08:17 BRT 2016
+Alo alo 2 55126
+Operacao requisitada: GET /src/ HTTP/1.1
+
+Hora: Sat Sep 24 17:08:17 BRT 2016
+Alo alo 2 55127
+
+Hora: Sat Sep 24 17:08:33 BRT 2016
+Alo alo 2 55128
+Operacao requisitada: GET /src/ HTTP/1.1
+
+Hora: Sat Sep 24 17:08:33 BRT 2016
+Alo alo 2 55129
+
+Hora: Sat Sep 24 17:17:14 BRT 2016
+Porta requisitada: 55147
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:19:35 BRT 2016
+Porta requisitada: 55149
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:20:28 BRT 2016
+Porta requisitada: 55150
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:20:52 BRT 2016
+Porta requisitada: 55151
+
+Hora: Sat Sep 24 17:20:52 BRT 2016
+Porta requisitada: 55152
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:21:58 BRT 2016
+Porta requisitada: 55153
+
+Hora: Sat Sep 24 17:21:58 BRT 2016
+Porta requisitada: 55154
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:22:17 BRT 2016
+Porta requisitada: 55155
+
+Hora: Sat Sep 24 17:22:17 BRT 2016
+Porta requisitada: 55156
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:22:17 BRT 2016
+Porta requisitada: 55157
+Operacao requisitada: null
+
+Hora: Sat Sep 24 17:22:17 BRT 2016
+Porta requisitada: 55158
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:25:50 BRT 2016
+Porta requisitada: 55178
+
+Hora: Sat Sep 24 17:25:50 BRT 2016
+Porta requisitada: 55179
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:25:50 BRT 2016
+Porta requisitada: 55181
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:25:50 BRT 2016
+Porta requisitada: 55182
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:25:50 BRT 2016
+Porta requisitada: 55183
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:30:10 BRT 2016
+Porta requisitada: 55204
+
+Hora: Sat Sep 24 17:30:31 BRT 2016
+Porta requisitada: 55237
+
+Hora: Sat Sep 24 17:31:15 BRT 2016
+Porta requisitada: 55248
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:31:15 BRT 2016
+Porta requisitada: 55249
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:31:15 BRT 2016
+Porta requisitada: 55250
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:31:15 BRT 2016
+Porta requisitada: 55251
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:31:15 BRT 2016
+Porta requisitada: 55253
+
+Hora: Sat Sep 24 17:31:15 BRT 2016
+Porta requisitada: 55254
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /test/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:31:15 BRT 2016
+Porta requisitada: 55255
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:32:34 BRT 2016
+Porta requisitada: 55282
+
+Hora: Sat Sep 24 17:32:34 BRT 2016
+Porta requisitada: 55283
+
+Hora: Sat Sep 24 17:32:34 BRT 2016
+Porta requisitada: 55284
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:32:34 BRT 2016
+Porta requisitada: 55287
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:32:34 BRT 2016
+Porta requisitada: 55290
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:34:53 BRT 2016
+Porta requisitada: 55305
+
+Hora: Sat Sep 24 17:34:53 BRT 2016
+Porta requisitada: 55306
+
+Hora: Sat Sep 24 17:34:53 BRT 2016
+Porta requisitada: 55307
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: null
+
+Hora: Sat Sep 24 17:37:04 BRT 2016
+Porta requisitada: 55324
+
+Hora: Sat Sep 24 17:37:04 BRT 2016
+Porta requisitada: 55325
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:37:04 BRT 2016
+Porta requisitada: 55328
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:37:53 BRT 2016
+Porta requisitada: 55348
+
+Hora: Sat Sep 24 17:37:53 BRT 2016
+Porta requisitada: 55349
+Operacao requisitada: GET / HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /favicon.ico HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:37:53 BRT 2016
+Porta requisitada: 55352
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:37:53 BRT 2016
+Porta requisitada: 55353
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
+
+Hora: Sat Sep 24 17:37:53 BRT 2016
+Porta requisitada: 55354
+
+Hora: Sat Sep 24 17:37:53 BRT 2016
+Porta requisitada: 55355
+Operacao requisitada: GET /teste/ HTTP/1.1
+Endereco:  localhost:6789
+Operacao requisitada: GET /src/ HTTP/1.1
+Endereco:  localhost:6789
