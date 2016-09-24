@@ -1,25 +1,39 @@
-
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
+import java.util.GregorianCalendar;
 
 public final class WebServer {
 
-    public static void main(String argv[]) throws Exception {
-        // Ajustar o numero da porta.
-        int port = 6789;
+    public static void main(String arvg[]) throws Exception {
+        GregorianCalendar calendar = new GregorianCalendar();
 
+        // Ajustar o número da porta.
+        int port = 6789;
+        
         // Estabelecer o socket de escuta.
-        ServerSocket server = new ServerSocket(port);
+        ServerSocket servidor = new ServerSocket(port);
         System.out.println("Porta " + port + " aberta!");
+
         // Processar a requisição de serviço HTTP em um laço infinito.
         while (true) {
-            // Escutar requisição de conexao TCP.
-            Socket conexao = server.accept();
-            //Construir um objeto para processar a mensagem de requisição HTTP.
-            HttpRequest request = new HttpRequest(conexao);
+            
+            // Escutar requisição de conexão TCP.
+            Socket cliente = servidor.accept();
+            
+            //Grava no log o horario da operação e a nova porta da requisicao TCP  
+            Log.geraLog("\nHora: "+calendar.getTime());
+            Log.geraLog("Porta requisitada: "+Integer.toString(cliente.getPort()));
 
-            Thread thread = new Thread(request); // Criar um novo thread para processar a requisicaoo.
-            thread.start(); //Iniciar o thread.
+            //Construir um objeto para processar a mensagem de requisição HTTP.
+            HttpRequest request = new HttpRequest(cliente);
+            
+            // Criar um novo thread para processar a requisição.
+            Thread thread = new Thread(request);
+            
+            //Iniciar o thread.
+            thread.start();
+
         }
     }
+
 }
+
