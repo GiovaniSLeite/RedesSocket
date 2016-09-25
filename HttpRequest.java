@@ -12,15 +12,40 @@ final class HttpRequest implements Runnable {
 
     //Senha que autoriza os acessos ao diretorio
     String ADMINISTRADOR = "admin:admin";
+    ArrayList<String> LOGINSENHA;
     ArrayList<String> DIRETORIOSOCULTOS;
     ArrayList<String> DIRETORIOSRESTRITOS;
 
     public HttpRequest(Socket socket) throws Exception {
         this.socket = socket;
+        LOGINSENHA = new ArrayList<String>();
         DIRETORIOSRESTRITOS = new ArrayList<String>();
         DIRETORIOSOCULTOS = new ArrayList<String>();
-        DIRETORIOSOCULTOS.add("./src");
-        DIRETORIOSRESTRITOS.add("./test");
+
+        //Le o arquivo de configuracao
+        BufferedReader sc = new BufferedReader(new FileReader("configuracao.txt"));
+        
+        String b = "";
+        //As primeiras linhas estao com explicacoes e, conforme estipulado, os topicos sao separados por "--"
+        while(!(b = sc.readLine()).equals("--"))
+        {}
+        //Dai vem os logins:senhas
+        while(!(b = sc.readLine()).equals("--")){
+            LOGINSENHA.add(b);
+        }
+        //Depois disso os diretorios que devem estar ocultos
+        while(!(b = sc.readLine()).equals("--")){
+            DIRETORIOSOCULTOS.add(b);
+            DIRETORIOSOCULTOS.add(b+"/");
+        }
+        //E os diretorios restritos (que pedem autenticacao)
+        while(!(b = sc.readLine()).equals("--")){
+            DIRETORIOSRESTRITOS.add(b);
+            DIRETORIOSRESTRITOS.add(b+"/");
+        }
+        
+        
+        
     }
 
     // Implemente o método run() da interface Runnable.
@@ -34,33 +59,33 @@ final class HttpRequest implements Runnable {
 
     private void processRequest() throws Exception {
 
-        // Obter uma referência para os trechos de entrada e saída do socket.
+        // Obter uma referencia para os trechos de entrada e saida do socket.
         InputStream is = socket.getInputStream();
         DataOutputStream os = new DataOutputStream(socket.getOutputStream());
 
         // Ajustar os filtros do trecho de entrada.
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-        // Obter a linha de requisição da mensagem de requisição HTTP.
+        // Obter a linha de requisicao da mensagem de requisição HTTP.
         String requestLine = br.readLine();
 
-        //  Exibir a linha de requisição e grava no log
+        //  Exibir a linha de requisicao e grava no log
         System.out.println();
         System.out.println(requestLine);
 
-        //Grava no Log a operação requisitada
+        //Grava no Log a operacao requisitada
         Log.geraLog("Operacao requisitada: " + requestLine);
 
-        // Extrair o nome do arquivo a linha de requisição.
+        // Extrair o nome do arquivo a linha de requisicao.
         StringTokenizer tokens = new StringTokenizer(requestLine);
 
-        // pular o método, que deve ser “GET”
+        // pular o metodo, que deve ser “GET”
         tokens.nextToken();
 
         //Define o nome do arquivo a ser procurado
         String fileName = tokens.nextToken();
 
-        // Acrescente um “.” de modo que a requisição do arquivo esteja dentro do diretório atual.
+        // Acrescente um “.” de modo que a requisicao do arquivo esteja dentro do diretorio atual.
         fileName = "." + fileName;
 
         //Imprime na tela qual eh o arquivo/diretorio solicitado
@@ -73,17 +98,17 @@ final class HttpRequest implements Runnable {
         String headerLine = null;
         while ((headerLine = br.readLine()).length() != 0) {
             
-            //Exibe na tela cada linha do cabeçalho
+            //Exibe na tela cada linha do cabecalho
             System.out.println(headerLine);
 
-            //Grava no Log qual o endereço da origem da requisição
+            //Grava no Log qual o endereco da origem da requisicao
             if (headerLine.contains("Host:")) {
                 Log.geraLog("Endereco: " + headerLine.substring(5));
             }
-
+            
             //Apenas faz a verificacao de login em diretorios restritos
             if (!fileName.equals("./") && DIRETORIOSRESTRITOS.contains(fileName)) {
-
+                
                 //Bloco que faz a autenticacao do usuario. Primeiro, verifica no cabecalho o usuario e senha requisitados
                 if (headerLine.contains("Authorization")) {
                     //Pega a string que contem o user e a senha criptografadas
@@ -93,7 +118,7 @@ final class HttpRequest implements Runnable {
                     byte[] decodedBytes = Base64.getDecoder().decode(userSenha.getBytes());
 
                     //Se o usuario e senha possuem permissao, entao autoriza o acesso
-                    if (new String(decodedBytes, Charset.forName(("UTF-8"))).equals(ADMINISTRADOR)) {
+                    if (LOGINSENHA.contains(new String(decodedBytes, Charset.forName(("UTF-8"))))) {
                         autorizado = true;
                     }
                 }
@@ -131,6 +156,7 @@ final class HttpRequest implements Runnable {
                 if (!autorizado) {
                     statusLine = "HTTP/1.1 401 UNATHORIZED" + CRLF;
                     contentTypeLine = "WWW-Authenticate: Basic realm=\\\"RestrictedAccess\\\"";
+                    
                 }
 
                 //Se for um diretorio, cria um vetor com uma lista de Files do diretório
@@ -186,12 +212,12 @@ final class HttpRequest implements Runnable {
         os.writeBytes(CRLF);
 
         //Envia a pagina que lista os diretorios
-        if (targetFile.isDirectory()) {
+        if (targetFile.isDirectory()&& autorizado && !DIRETORIOSOCULTOS.contains(fileName)) {
             os.writeBytes(sb.toString());
         }
 
         // Enviar o corpo da entidade.
-        if (fileExists) {
+        if (fileExists && !DIRETORIOSOCULTOS.contains(fileName)) {
             if (fis != null) {
                 sendBytes(fis, os);
                 fis.close();
@@ -241,7 +267,7 @@ final class HttpRequest implements Runnable {
         sb.append("\n<head>");
         sb.append("\n<style>");
         sb.append("\n</style>");
-        sb.append("\n<title>List of files/dirs under /scratch/mseelam/view_storage/mseelam_otd1/otd_test/./work</title>");
+        sb.append("\n<title>Lista de arquivos</title>");
         sb.append("\n</head>");
         sb.append("\n<body>");
         sb.append("\n<div class=\"datagrid\">");
