@@ -155,7 +155,7 @@ final class HttpRequest implements Runnable {
                 //Se o usuario nao foi autorizado, retorna a mensagem no cabeçalho seguindo o padrao
                 if (!autorizado) {
                     statusLine = "HTTP/1.1 401 UNATHORIZED" + CRLF;
-                    contentTypeLine = "WWW-Authenticate: Basic realm=\\\"RestrictedAccess\\\"";
+                    contentTypeLine = "WWW-Authenticate: Basic realm=\\\"RestrictedAccess\\\"" + CRLF;
                     
                 }
 
